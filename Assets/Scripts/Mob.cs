@@ -44,7 +44,7 @@ public class Mob : MonoBehaviour
     }
 
 
-    void TakeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount)
     {
         float damageToShield = Mathf.Clamp(damageAmount, 0, curShield);
         curShield = Mathf.Clamp(curShield - damageToShield, 0, curShield);
