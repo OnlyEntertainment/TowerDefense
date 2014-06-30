@@ -45,7 +45,7 @@ public class Mob : MonoBehaviour
     }
 
 
-    public void TakeDamage(float damageAmount, GameObject sender)
+    public void TakeDamage(float damageAmount)
     {
         float damageToShield = Mathf.Clamp(damageAmount, 0, curShield);
         curShield = Mathf.Clamp(curShield - damageToShield, 0, curShield);
@@ -59,9 +59,8 @@ public class Mob : MonoBehaviour
 
         if (curHealth <= 0)
         {
- 
-            if (sender != null && sender.GetType== typeof(TowerProperties) ) sender.TargetDestroyed();
-            
+
+
             spawner.MobsOfWave.Remove(gameObject);
             Destroy(gameObject);
 
