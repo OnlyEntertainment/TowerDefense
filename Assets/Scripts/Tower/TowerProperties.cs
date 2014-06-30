@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TowerProperties : MonoBehaviour {
+public class TowerProperties : MonoBehaviour
+{
 
     // ############
     // Variablen
@@ -26,12 +27,12 @@ public class TowerProperties : MonoBehaviour {
     // Methoden
     // ------------
 
-	void Start () 
+    void Start()
     {
-	
-	} // END Start
-	
-	void Update () 
+
+    } // END Start
+
+    void Update()
     {
 
         if (enemyList.Count == 0)
@@ -41,15 +42,22 @@ public class TowerProperties : MonoBehaviour {
 
         if (targetActivated == true)
         {
-            targetEnemy = enemyList[0];
-            Vector3 enemyPosition = new Vector3(targetEnemy.transform.position.x, rotateObject.transform.position.y, targetEnemy.transform.position.z);
-            rotateObject.transform.LookAt(enemyPosition);
+            if (enemyList[0] == null)
+            {
+                enemyList.RemoveAt(0);
+            }
+            else
+            {
+                targetEnemy = enemyList[0];
+                Vector3 enemyPosition = new Vector3(targetEnemy.transform.position.x, rotateObject.transform.position.y, targetEnemy.transform.position.z);
+                rotateObject.transform.LookAt(enemyPosition);
 
-            Shotting();
+                Shotting();
+            }
         }
 
-        
-	} // END Update
+
+    } // END Update
 
 
     public void SetTarget(GameObject enemyObject)
@@ -62,7 +70,7 @@ public class TowerProperties : MonoBehaviour {
             targetActivated = true;
 
         }
-        
+
 
     } // END SetTarget
 
@@ -71,9 +79,9 @@ public class TowerProperties : MonoBehaviour {
 
         if (enemyList.Contains(enemyObject) == true)
         {
-            enemyList.Remove(enemyObject);         
-        } 
-    
+            enemyList.Remove(enemyObject);
+        }
+
     } // END RemoveTarget
 
     void Shotting()
@@ -85,12 +93,21 @@ public class TowerProperties : MonoBehaviour {
         {
 
             targetEnemy.GetComponent<Mob>().TakeDamage(towerDamage);
-            
+
             shotTime = towerShotFrequence;
         }
 
 
 
     } // END Shotting
+
+
+    public void TargetDestroyed()
+    {
+
+
+
+    } // END TargetDestroyed
+
 
 } // END Class
