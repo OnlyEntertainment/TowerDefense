@@ -66,4 +66,10 @@ public class Mob : MonoBehaviour
 
     }
 
+    public void MobFinishedMace()
+    {
+        spawner.MobsOfWave.Remove(gameObject);
+        Destroy(this);
+    }
+
 }

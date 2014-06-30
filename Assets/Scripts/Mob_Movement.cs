@@ -38,6 +38,7 @@ public class Mob_Movement : MonoBehaviour
             {
                 curWaypoint = 0;
                 path = null;
+                gameObject.GetComponent<Mob>().MobFinishedMace();
             }
             else
             {
