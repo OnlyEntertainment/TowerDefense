@@ -32,30 +32,35 @@ public class Waypoint : MonoBehaviour
 
     }
 
-
-    // Use this for initialization
-    void Start()
+    public void CheckToDelete()
     {
         Vector3 originVector = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 1.0f, gameObject.transform.position.z);
         RaycastHit hit;
         RaycastHit[] hits = Physics.RaycastAll(originVector, Vector3.up, Mathf.Infinity);
         foreach (RaycastHit singleHit in hits)
         {
-            if (singleHit.collider.tag == "Obstacle") { Destroy(gameObject); }
+            if (singleHit.collider.tag == "Obstacle") { Debug.Log("Found Obstacle, Delete: " + gameObject.name); Destroy(gameObject); return; }
         }
 
-        if (Physics.Raycast(originVector, Vector3.up, out hit,Mathf.Infinity))
+        if (Physics.Raycast(originVector, Vector3.up, out hit, Mathf.Infinity))
         {
-            if (hit.collider.tag == "Obstacle") { Destroy(gameObject); }
-            
+            if (hit.collider.tag == "Obstacle") { Debug.Log("Found Obstacle, Delete: " + gameObject.name); Destroy(gameObject); return; }
+
         }
+    }
+
+
+    // Use this for initialization
+    void Start()
+    {
+        CheckToDelete();
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 originVector = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y - 1.0f, gameObject.transform.position.z);
-        
+
 
 
         Debug.DrawRay(originVector, Vector3.up, Color.red);

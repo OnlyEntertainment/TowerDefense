@@ -17,6 +17,7 @@ public class SetTower : MonoBehaviour
     // Use this for initialization
 
     private Material towerInitMaterial;
+    private bool canBuild = true;
 
     void Start()
     {
@@ -33,7 +34,7 @@ public class SetTower : MonoBehaviour
         //Debug.DrawRay(Camera.main.transform.position, Vector3.forward * 10, Color.blue);
 
         float boxSize = 10.0f;
-        GUI.Box(new Rect(Screen.width / 2 - boxSize/2, Screen.height / 2 - boxSize/2, boxSize,boxSize), "");
+        GUI.Box(new Rect(Screen.width / 2 - boxSize / 2, Screen.height / 2 - boxSize / 2, boxSize, boxSize), "");
 
     }
 
@@ -70,24 +71,29 @@ public class SetTower : MonoBehaviour
                 //if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit_MouseCourser, Mathf.Infinity/*9: Weg collider*/))
                 {
 
-                    Debug.DrawRay(currentTower.transform.position, Vector3.up * currentTower.transform.localScale.y);
+                    //Debug.DrawRay(currentTower.transform.position+new Vector3(0,currentTower.transform.localScale.y,0), Vector3.up * currentTower.transform.localScale.y);
+                    Debug.DrawRay(currentTower.transform.position + new Vector3(0, currentTower.transform.localScale.y, 0), Vector3.down * currentTower.transform.localScale.y);
                     RaycastHit hit_Structure;
-                    if (Physics.Raycast(currentTower.transform.position, Vector3.up, out hit_Structure, currentTower.transform.localScale.y))
+                    //if (Physics.Raycast(currentTower.transform.position, Vector3.up, out hit_Structure, currentTower.transform.localScale.y))
+                    if (Physics.Raycast(currentTower.transform.position + new Vector3(0, currentTower.transform.localScale.y, 0), Vector3.down, out hit_Structure, currentTower.transform.localScale.y))
                     {
                         currentTower.renderer.material.color = Color.red;
+                        canBuild = false;
+
                     }
                     else
                     {
                         currentTower.renderer.material.color = Color.green;
+                        canBuild = true;
+                    }
 
-                    
-                    Debug.Log("RaycastHit Point = " + hit_MouseCourser.point);
-                    
+                    //Debug.Log("RaycastHit Point = " + hit_MouseCourser.point);
+
                     Vector3 towerPosition = new Vector3(CalculatePosition(hit_MouseCourser.point.x, XZPOS.X),
                                                         currentTower.transform.localScale.y / 2,
                                                         CalculatePosition(hit_MouseCourser.point.z, XZPOS.Z));
-                    
-                    Debug.Log("Raycast Hit Calculated = " + towerPosition);
+
+                    //Debug.Log("Raycast Hit Calculated = " + towerPosition);
 
                     currentTower.transform.position = towerPosition;
 
@@ -98,23 +104,23 @@ public class SetTower : MonoBehaviour
                     else
                     {
                         currentTower.GetComponent<MeshRenderer>().enabled = true;
-                        if (Input.GetMouseButtonDown(0))
+                        if (canBuild &&  Input.GetMouseButtonDown(0))
                         {
                             currentTower.collider.enabled = true;
                             currentTower.renderer.material = towerInitMaterial;
                             currentTower = null;
                             currentTower = (GameObject)Instantiate(Tower);
 
-
+                            //GameProperties.waypointGenerator.RefreshWaypoints();
                         }
 
                     }
 
-                    }
+
                 }
                 else
                 {
-                    Debug.Log("MausCursor Position = " + Input.mousePosition);
+                    //Debug.Log("MausCursor Position = " + Input.mousePosition);
                 }
             }
 
@@ -136,10 +142,10 @@ public class SetTower : MonoBehaviour
         //if (rest >= (feldGroesse / 2)) add++;
 
 
-        float ergebnis = (ganzzahl + add) * feldGroesse + feldGroesse/2;
+        float ergebnis = (ganzzahl + add) * feldGroesse + feldGroesse / 2;
 
-        if (xzPos == XZPOS.X) ergebnis = Mathf.Clamp(ergebnis, (1.5f * feldGroesse), waypointGenerator.groesseSpielflaecheX * feldGroesse+feldGroesse/2);
-        else ergebnis = Mathf.Clamp(ergebnis, (2.5f * feldGroesse), waypointGenerator.groesseSpielflaecheZ * feldGroesse+feldGroesse*1.5f);
+        if (xzPos == XZPOS.X) ergebnis = Mathf.Clamp(ergebnis, (1.5f * feldGroesse), waypointGenerator.groesseSpielflaecheX * feldGroesse + feldGroesse / 2);
+        else ergebnis = Mathf.Clamp(ergebnis, (2.5f * feldGroesse), waypointGenerator.groesseSpielflaecheZ * feldGroesse + feldGroesse * 1.5f);
 
 
 
