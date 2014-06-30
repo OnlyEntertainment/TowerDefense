@@ -34,5 +34,10 @@ public class NewBehaviourScript : MonoBehaviour {
 
             }
         }
+
+        if (GUI.Button(new Rect(200, 100, 100, 100), "Refresh Waypoints"))
+        {
+            GameProperties.waypointGenerator.RefreshWaypoints();
+        }
     }
 }

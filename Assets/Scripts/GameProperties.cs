@@ -6,7 +6,8 @@ using UnityEngine;
 
     public class GameProperties:MonoBehaviour
     {
-        public static GameObject waypointGenerator;
+        public static GameObject waypointHolder;
+        public static WaypointGenerator waypointGenerator;
 
         public int maxTriesToFindObjects = 5;
         private int triedToFindObjects = 0;
@@ -15,7 +16,8 @@ using UnityEngine;
 
         void Start()
         {
-            waypointGenerator = GameObject.Find("Waypoints-Holder");
+            waypointHolder= GameObject.Find("Waypoints-Holder");
+            waypointGenerator = waypointHolder.GetComponent<WaypointGenerator>();
         }
 
         void Update()

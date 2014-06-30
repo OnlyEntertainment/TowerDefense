@@ -10,10 +10,10 @@ public class WaypointGenerator : MonoBehaviour
     public float maxDistanceBetweenWaypoints = 3.0f;
 
 
-    public bool GenerateLevel = false;
+    public bool shouldGenerateLevel = false;
 
 
-    public GameObject prefabWaypoint;    
+    public GameObject prefabWaypoint;
     public GameObject prefabLevelWall;
     public GameObject prefabGoal;
     public GameObject prefabSpawn;
@@ -28,27 +28,51 @@ public class WaypointGenerator : MonoBehaviour
     public float wallHeight = 5.0f;
     public float wallThickness = 2.0f;
 
-    
 
-    
+
+
     void Awake()
     {
-        if (GenerateLevel) GenerateWaypoints();
-
-        Waypoint.waypoints = new ArrayList();
-        CalculateWaypoints(transform);
-        CalculateNeighbours();
+        MasterGenerator();
     }
 
     // Use this for initialization
     void Start()
     {
-        
 
-        
+
+
     }
 
-    
+    private void MasterGenerator()
+    {
+        if (shouldGenerateLevel) GenerateLevel();
+
+
+
+        //DeleteWayPoints();
+        GenerateWaypoints();
+
+
+        CalculateWaypoints(transform);
+        CalculateNeighbours();
+    }
+
+    public void RefreshWaypoints()
+    {
+
+        foreach (Transform child in transform)
+        {
+
+            child.gameObject.GetComponent<Waypoint>().CheckToDelete();
+            if (child != null) child.gameObject.GetComponent<Waypoint>().waypointsInRange.Clear();
+        }
+
+        CalculateWaypoints(transform);
+        CalculateNeighbours();
+    }
+
+
 
     // Update is called once per frame
     void Update()
@@ -56,18 +80,27 @@ public class WaypointGenerator : MonoBehaviour
 
     }
 
-    private void GenerateWaypoints()
+    private void DeleteWayPoints()
     {
-        //float xAbstandZumRand = prefabWaypoint.transform.localScale.x / 2;
-        //float zAbstandZumRand = prefabWaypoint.transform.localScale.z / 2 + prefabWaypoint.transform.localScale.z;
-        
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.tag == "Waypoint")
+            {
+                Debug.Log("Deleted: " + child.gameObject.name);
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+    private void GenerateLevel()
+    {
         float wallWidthX = ((groesseSpielflaecheX + 2) * groesseFelder);
-        float wallWidthXHalf = (wallWidthX - groesseFelder*2) / 2;    
+        float wallWidthXHalf = (wallWidthX - groesseFelder * 2) / 2;
 
         GameObject wallObject;
         //Linke Abgrenzung
         wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3(groesseFelder / 2, wallHeight / 2, ((groesseSpielflaecheZ + 4) * groesseFelder) / 2), prefabLevelWall.transform.rotation);
-        wallObject.transform.localScale = new Vector3(groesseFelder,wallHeight,(groesseSpielflaecheZ + 4) * groesseFelder);
+        wallObject.transform.localScale = new Vector3(groesseFelder, wallHeight, (groesseSpielflaecheZ + 4) * groesseFelder);
 
         //Rechte Abgrenzung
         wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3((groesseSpielflaecheX + 1.5f) * groesseFelder, wallHeight / 2, ((groesseSpielflaecheZ + 4) * groesseFelder) / 2), prefabLevelWall.transform.rotation);
@@ -79,11 +112,11 @@ public class WaypointGenerator : MonoBehaviour
         wallObject.transform.localScale = new Vector3(wallWidthX, wallHeight, groesseFelder);
 
         //UntenLinks Abgrenzung
-        wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3(wallWidthXHalf/2, wallHeight / 2, groesseFelder / 2 + groesseFelder), prefabLevelWall.transform.rotation);
+        wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3(wallWidthXHalf / 2, wallHeight / 2, groesseFelder / 2 + groesseFelder), prefabLevelWall.transform.rotation);
         wallObject.transform.localScale = new Vector3(wallWidthXHalf, wallHeight, groesseFelder);
-        
+
         //UntenRechts Abgrenzung
-        wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3(wallWidthXHalf/2+wallWidthXHalf+groesseFelder*2, wallHeight / 2, groesseFelder / 2+groesseFelder), prefabLevelWall.transform.rotation);
+        wallObject = (GameObject)Instantiate(prefabLevelWall, new Vector3(wallWidthXHalf / 2 + wallWidthXHalf + groesseFelder * 2, wallHeight / 2, groesseFelder / 2 + groesseFelder), prefabLevelWall.transform.rotation);
         wallObject.transform.localScale = new Vector3(wallWidthXHalf, wallHeight, groesseFelder);
 
         //Obere Abgrenzung
@@ -101,9 +134,10 @@ public class WaypointGenerator : MonoBehaviour
 
         //Spawn
         GameObject waypoint;
-        waypoint = (GameObject)Instantiate(prefabSpawn,new Vector3((groesseSpielflaecheX+groesseFelder)*groesseFelder/2,yPosition,1.5f*groesseFelder), prefabWaypoint.transform.rotation);
-        waypoint.transform.localScale = new Vector3(2*groesseFelder,heightFelder,groesseFelder);
+        waypoint = (GameObject)Instantiate(prefabSpawn, new Vector3((groesseSpielflaecheX + groesseFelder) * groesseFelder / 2, yPosition, 1.5f * groesseFelder), prefabWaypoint.transform.rotation);
+        waypoint.transform.localScale = new Vector3(2 * groesseFelder, heightFelder, groesseFelder);
         waypoint.name = "Spawn";
+        waypoint.tag = "Waypoint_Spawn";
         waypoint.transform.parent = gameObject.transform;
         waypointSpawn = waypoint;
 
@@ -111,18 +145,34 @@ public class WaypointGenerator : MonoBehaviour
         waypoint = (GameObject)Instantiate(prefabGoal, new Vector3((groesseSpielflaecheX + groesseFelder) * groesseFelder / 2, yPosition, (groesseSpielflaecheZ + 2) * groesseFelder + groesseFelder / 2), prefabWaypoint.transform.rotation);
         waypoint.transform.localScale = new Vector3(2 * groesseFelder, heightFelder, groesseFelder);
         waypoint.name = "Goal";
+        waypoint.tag = "Waypoint_Goal";
         waypoint.transform.parent = gameObject.transform;
         waypointGoal = waypoint;
 
+        shouldGenerateLevel = false;
+    }
+
+    private void GenerateWaypoints()
+    {
+        //float xAbstandZumRand = prefabWaypoint.transform.localScale.x / 2;
+        //float zAbstandZumRand = prefabWaypoint.transform.localScale.z / 2 + prefabWaypoint.transform.localScale.z;
+
+        float wallWidthX = ((groesseSpielflaecheX + 2) * groesseFelder);
+        float wallWidthXHalf = (wallWidthX - groesseFelder * 2) / 2;
+
+        GameObject waypoint;
+
+        //Waypoints
         for (float x = 0; x < groesseSpielflaecheX; x++)
         {
             for (float z = 0; z < groesseSpielflaecheZ; z++)
             {
                 Vector3 newPosition = new Vector3(x * groesseFelder + 1.5f * groesseFelder, yPosition, z * groesseFelder + 2.5f * groesseFelder);
 
-                waypoint = (GameObject)Instantiate(prefabWaypoint,newPosition , prefabWaypoint.transform.rotation);
+                waypoint = (GameObject)Instantiate(prefabWaypoint, newPosition, prefabWaypoint.transform.rotation);
                 waypoint.transform.localScale = new Vector3(groesseFelder, heightFelder, groesseFelder);
                 waypoint.name = "Waypoint (" + x + "/" + z + ")";
+                //waypoint.tag = "Waypoint";
                 waypoint.transform.parent = gameObject.transform;
 
             }
@@ -131,16 +181,29 @@ public class WaypointGenerator : MonoBehaviour
 
     public void CalculateWaypoints(Transform parentTransform)
     {
+        if (Waypoint.waypoints != null)
+        {
+            Waypoint.waypoints.Clear();
+        }
+        else
+        {
+            Waypoint.waypoints = new ArrayList();
+        }
+
+
         foreach (Transform child in parentTransform)
         {
-            if (child.GetComponent<Waypoint>())
+
+            if (child != null)
             {
-                Waypoint waypoint = child.GetComponent<Waypoint>();
-                Waypoint.waypoints.Add(waypoint);
+                if (child.GetComponent<Waypoint>())
+                {
+                    Waypoint waypoint = child.GetComponent<Waypoint>();
+                    Waypoint.waypoints.Add(waypoint);
+                }
+
+                if (child.childCount > 0) { CalculateWaypoints(child); }
             }
-
-            if (child.childCount > 0) { CalculateWaypoints(child); }
-
         }
     }
 
@@ -165,7 +228,7 @@ public class WaypointGenerator : MonoBehaviour
                         foreach (RaycastHit hit in hits)
                         {
                             if (!hit.collider.isTrigger && hit.collider.tag != "Player")
-                            { 
+                            {
                                 isWayFree = false;
                                 break;
                             }
