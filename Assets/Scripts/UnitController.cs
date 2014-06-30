@@ -28,7 +28,7 @@ public class UnitController : MonoBehaviour {
 
     void OnGUI()
     {
-        if (GUI.Button(new Rect(100, 500, 100, 100), "Gehe"))
+        if (GUI.Button(new Rect(100, 200, 100, 100), "Gehe"))
         {
             if (GeheZuGameObject != null)
             { GeheZuPunkt = GeheZuGameObject.transform.position; }
@@ -43,7 +43,7 @@ public class UnitController : MonoBehaviour {
         
         if (script.WegListe != null)
         {
-            if (currentWaypoint - 1 == script.WegListe.Count && GetComponent<Unit>().ownUnit_OnAction == "idle")
+            if (currentWaypoint == script.WegListe.Count && GetComponent<Unit>().ownUnit_OnAction == "idle")
             {
                 //Beende alles
                 currentWaypoint = 0;

@@ -5,8 +5,8 @@ public class NewBehaviourScript : MonoBehaviour {
 
     public Waypoint[] weg;
 
-    public Waypoint startWegpunkt;
-    public Waypoint endWegpunkt;
+    public GameObject startWegpunkt;
+    public GameObject endWegpunkt;
     public ArrayList WegListe;
 
 	// Use this for initialization
@@ -23,8 +23,11 @@ public class NewBehaviourScript : MonoBehaviour {
     {
         if (GUI.Button(new Rect(100, 100, 100, 100), "Klick Mich"))
         {
+            Debug.Log(startWegpunkt.name);
+            Waypoint startWP = startWegpunkt.GetComponent<Waypoint>();
+            Waypoint endeWP = endWegpunkt.GetComponent<Waypoint>();
 
-            WegListe = PathFinder.GetPath(startWegpunkt, endWegpunkt);
+            WegListe = PathFinder.GetPath(startWP, endeWP);
             Debug.Log("Anzahl " + WegListe.Count.ToString());
             weg = new Waypoint[WegListe.Count];
             for (int i = 0; i < WegListe.Count; i++)
