@@ -17,6 +17,8 @@ public class TowerProperties : MonoBehaviour {
     public GameObject rotateObject;
 
 
+    private float shotTime = 0f;
+
     public List<GameObject> enemyList = new List<GameObject>();
     public GameObject targetEnemy;                     // aktuell anvisiertes Ziel
     bool targetActivated = false;               // hat der Tower ein aktuelles Ziel?
@@ -43,7 +45,7 @@ public class TowerProperties : MonoBehaviour {
             Vector3 enemyPosition = new Vector3(targetEnemy.transform.position.x, rotateObject.transform.position.y, targetEnemy.transform.position.z);
             rotateObject.transform.LookAt(enemyPosition);
 
-
+            Shotting();
         }
 
         
@@ -73,5 +75,22 @@ public class TowerProperties : MonoBehaviour {
         } 
     
     } // END RemoveTarget
+
+    void Shotting()
+    {
+
+        shotTime -= 1 * Time.deltaTime;
+
+        if (shotTime <= 0f)
+        {
+
+            targetEnemy.GetComponent<Mob>().TakeDamage(towerDamage);
+            
+            shotTime = towerShotFrequence;
+        }
+
+
+
+    } // END Shotting
 
 } // END Class
