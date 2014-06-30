@@ -30,7 +30,7 @@ public class Mob_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 curPosition = new Vector2(transform.position.y, transform.position.z);
+        Vector2 curPosition = new Vector2(transform.position.x, transform.position.z);
 
         if (path != null)
         {
@@ -44,7 +44,7 @@ public class Mob_Movement : MonoBehaviour
                 if (action == ACTIONS.Idle)
                 {
                     Waypoint nextWaypoint = (Waypoint)path[curWaypoint];
-                    moveTo = nextWaypoint.transform.position;
+                    moveTo = new Vector2(nextWaypoint.transform.position.x, nextWaypoint.transform.position.z);
                     action = ACTIONS.Move;
                     curWaypoint++;
                 }
@@ -54,6 +54,7 @@ public class Mob_Movement : MonoBehaviour
                     {
                         transform.LookAt(new Vector3(moveTo.x, transform.position.y, moveTo.y));
                         transform.Translate(Vector3.forward * mobSettings.curSpeed * Time.deltaTime);
+                        transform.position = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position) + transform.localScale.y, transform.position.z);
                         //transform.position=(new Vector3(tran
                     }
                     else { action = ACTIONS.Idle; }
@@ -69,10 +70,11 @@ public class Mob_Movement : MonoBehaviour
         //this.moveTo = new Vector2(moveTo.x, moveTo.z);
     }
 
-    public void StartMoving(Waypoint startWaypoint, Waypoint endWaypoint)
+    public void StartMoving(Waypoint startWaypoint, Waypoint endWaypoint, Spawner spawner)
     {
         this.startWaypoint = startWaypoint;
         this.endWaypoint = endWaypoint;
+        gameObject.GetComponent<Mob>().spawner = spawner;
 
         path = PathFinder.GetPath(startWaypoint, endWaypoint);
         curWaypoint = 0;

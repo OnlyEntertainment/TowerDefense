@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Mob : MonoBehaviour
 {
+    public Spawner spawner;
 
     public int moneyDrop;
     public int experienceDrop;
@@ -56,7 +57,12 @@ public class Mob : MonoBehaviour
 
         curHealth = Mathf.Clamp(curHealth - damageAmount, 0, curHealth);
 
-        if (curHealth <= 0) Destroy(this);
+        if (curHealth <= 0)
+        {
+            spawner.MobsOfWave.Remove(gameObject);
+            Destroy(this);
+
+        }
 
     }
 
