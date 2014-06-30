@@ -57,7 +57,11 @@ public class Spawner : MonoBehaviour
             }
             else
             {
-                if (MobsOfWave.Count == 0) waveRunning = false;curWave++ ;
+                if (MobsOfWave.Count == 0)
+                {
+                    waveRunning = false;
+                    curWave++;
+                }
             }
 
         }
@@ -82,7 +86,7 @@ public class Spawner : MonoBehaviour
     {
 
         GameObject mob = (GameObject)Instantiate(waveMob[curWave], startWaypoint.gameObject.transform.position, waveMob[curWave].transform.rotation);
-        mob.GetComponent<Mob_Movement>().StartMoving(startWaypoint, endWaypoint,this);
+        mob.GetComponent<Mob_Movement>().StartMoving(startWaypoint, endWaypoint, this);
         MobsOfWave.Add(mob);
         timer = delay;
         mobsSpawned++;

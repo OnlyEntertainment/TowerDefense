@@ -60,7 +60,7 @@ public class Mob : MonoBehaviour
         if (curHealth <= 0)
         {
             spawner.MobsOfWave.Remove(gameObject);
-            Destroy(this);
+            Destroy(gameObject);
 
         }
 
@@ -69,7 +69,7 @@ public class Mob : MonoBehaviour
     public void MobFinishedMace()
     {
         spawner.MobsOfWave.Remove(gameObject);
-        Destroy(this);
+        Destroy(gameObject);
     }
 
 }
