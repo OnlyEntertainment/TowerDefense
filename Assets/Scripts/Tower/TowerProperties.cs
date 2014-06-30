@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TowerProperties : MonoBehaviour {
 
@@ -13,8 +14,12 @@ public class TowerProperties : MonoBehaviour {
     public float towerMoveSpeed = 3f;           // Drehgeschwindigkeit des Towers
     public float towerShotFrequence = 2f;       // Schussfrequenz
 
+    public GameObject rotateObject;
 
 
+    public List<GameObject> enemyList = new List<GameObject>();
+    public GameObject targetEnemy;                     // aktuell anvisiertes Ziel
+    bool targetActivated = false;               // hat der Tower ein aktuelles Ziel?
     // ############
     // Methoden
     // ------------
@@ -26,6 +31,47 @@ public class TowerProperties : MonoBehaviour {
 	
 	void Update () 
     {
-	
+
+        if (enemyList.Count == 0)
+        {
+            targetActivated = false;
+        }
+
+        if (targetActivated == true)
+        {
+            targetEnemy = enemyList[0];
+            Vector3 enemyPosition = new Vector3(targetEnemy.transform.position.x, rotateObject.transform.position.y, targetEnemy.transform.position.z);
+            rotateObject.transform.LookAt(enemyPosition);
+
+
+        }
+
+        
 	} // END Update
+
+
+    public void SetTarget(GameObject enemyObject)
+    {
+
+        if (enemyList.Contains(enemyObject) == false)
+        {
+
+            enemyList.Add(enemyObject);
+            targetActivated = true;
+
+        }
+        
+
+    } // END SetTarget
+
+    public void RemoveTarget(GameObject enemyObject)
+    {
+
+        if (enemyList.Contains(enemyObject) == true)
+        {
+            enemyList.Remove(enemyObject);         
+        } 
+    
+    } // END RemoveTarget
+
 } // END Class
