@@ -24,6 +24,8 @@ public class Spawner : MonoBehaviour
     public float waveEveryXSeconds = 300;
     public float nextWaveinXSeconds;
 
+    public ArrayList path;
+
     // Use this for initialization
     void Start()
     {
@@ -73,7 +75,8 @@ public class Spawner : MonoBehaviour
 
         if (curWave < waveMob.Count)
         {
-            gameObject.GetComponent<WaypointGenerator>().RefreshWaypoints();
+
+            path = gameObject.GetComponent<WaypointGenerator>().RefreshWaypoints();
 
             mobsSpawned = 0;
             waveRunning = true;
@@ -86,7 +89,7 @@ public class Spawner : MonoBehaviour
     {
 
         GameObject mob = (GameObject)Instantiate(waveMob[curWave], startWaypoint.gameObject.transform.position, waveMob[curWave].transform.rotation);
-        mob.GetComponent<Mob_Movement>().StartMoving(startWaypoint, endWaypoint, this);
+        mob.GetComponent<Mob_Movement>().StartMoving(path, this);
         MobsOfWave.Add(mob);
         timer = delay;
         mobsSpawned++;
