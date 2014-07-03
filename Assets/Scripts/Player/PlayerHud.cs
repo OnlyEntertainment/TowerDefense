@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerHud : MonoBehaviour {
 
     public PlayerKeyBinding playerKeyBinding;
-    
+    public SetTower setTower;
     
     
     public int playerMoney;
@@ -17,6 +17,14 @@ public class PlayerHud : MonoBehaviour {
     public Texture2D iconGun;
     public Texture2D iconTower;
     public Texture2D iconWall;
+
+    // Initialisieren
+    private int currentFightChoice = 1;
+    private int currentBuildChoice = 1;
+
+
+
+
 
 	void Start () 
     {
@@ -47,18 +55,46 @@ public class PlayerHud : MonoBehaviour {
 
         if (menuChoice == false)
         {
-            GUI.Box(new Rect(5, 5, 100, 100), iconSword);
-            GUI.Box(new Rect(115, 5, 100, 100), iconGun);
+            GUI.Box(new Rect(5, 5, 50, 50), iconSword);
+            GUI.Box(new Rect(75, 5, 50, 50), iconGun);
 
-            GUI.Box(new Rect(5, 115, 100, 100), "Fight");
+            GUI.Label(new Rect(5, 65, 200, 30), "Fight");
 
+            if (currentFightChoice == 1)
+            {
+                GUI.Box(new Rect(5, 90, 50, 50), iconSword);
+            }
+            else
+            {
+                GUI.Box(new Rect(5, 90, 50, 50), iconGun);
+            }
+
+            if (Input.GetKeyDown(playerKeyBinding.menuFightChoice1))
+            {currentFightChoice = 1; }
+            else if (Input.GetKeyDown(playerKeyBinding.menuFightChoice2))
+            {currentFightChoice = 2;}
         }
         else
         {
-            GUI.Box(new Rect(5, 5, 100, 100), iconTower);
-            GUI.Box(new Rect(115, 5, 100, 100), iconWall);
+            GUI.Box(new Rect(5, 5, 50, 50), iconTower);
+            GUI.Box(new Rect(75, 5, 50, 50), iconWall);
 
-            GUI.Box(new Rect(5, 115, 100, 100), "Build");
+            GUI.Label(new Rect(5, 65, 200, 30), "Build");
+
+            if (currentBuildChoice == 1)
+            {
+                GUI.Box(new Rect(5, 90, 50, 50), iconTower);
+            }
+            else
+            {
+                GUI.Box(new Rect(5, 90, 50, 50), iconWall);
+            }
+
+
+            if (Input.GetKeyDown(playerKeyBinding.menuFightChoice1))
+            { currentBuildChoice = 1; setTower.SetCurrentBuildingObject(currentBuildChoice); }
+            else if (Input.GetKeyDown(playerKeyBinding.menuFightChoice2))
+            { currentBuildChoice = 2; setTower.SetCurrentBuildingObject(currentBuildChoice); }
         }
 
 

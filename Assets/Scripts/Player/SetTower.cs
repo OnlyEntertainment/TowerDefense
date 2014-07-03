@@ -5,10 +5,13 @@ public class SetTower : MonoBehaviour
 {
     enum XZPOS { X, Z };
 
-    public GameObject Tower;
+    public GameObject Tower;                    // TowerPrefab
+    public GameObject Wall;                     // WallPrefab
 
     public GameObject currentTower = null;
+    public int currentTowerNumber = 1;
 
+    public PlayerKeyBinding playerKeyBinding;
 
     public int debugInt = 0;
     public float debugFloat = 0;
@@ -46,10 +49,18 @@ public class SetTower : MonoBehaviour
         Input.mousePosition.Set(Screen.width / 2, Screen.height / 2, 0);
         if (!isBuilding)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(playerKeyBinding.menuChangeChoice))
             {
                 isBuilding = true;
-                currentTower = (GameObject)Instantiate(Tower);
+                if (currentTowerNumber == 1)
+                {
+                    currentTower = (GameObject)Instantiate(Tower);
+                }
+                else
+                {
+                    currentTower = (GameObject)Instantiate(Wall);
+                }
+                
                 towerInitMaterial = currentTower.renderer.material;
                 currentTower.collider.enabled = false;
                 currentTower.renderer.material.color = Color.green;
@@ -58,7 +69,7 @@ public class SetTower : MonoBehaviour
         }
         else if (isBuilding)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(playerKeyBinding.menuChangeChoice))
             {
                 isBuilding = false;
                 Destroy(currentTower);
@@ -109,8 +120,15 @@ public class SetTower : MonoBehaviour
                             currentTower.collider.enabled = true;
                             currentTower.renderer.material = towerInitMaterial;
                             currentTower = null;
-                            currentTower = (GameObject)Instantiate(Tower);
 
+                            if (currentTowerNumber == 1)
+                            {
+                                currentTower = (GameObject)Instantiate(Tower);
+                            }
+                            else
+                            {
+                                currentTower = (GameObject)Instantiate(Wall);
+                            }
                             //GameProperties.waypointGenerator.RefreshWaypoints();
                         }
 
@@ -154,5 +172,19 @@ public class SetTower : MonoBehaviour
         return ergebnis;
         //WaypointGenerator wpGenerator = GameProperties.
         //float groesseFeld = 
-    }
-}
+    } // END CalcutePosition
+
+    public void SetCurrentBuildingObject(int newbuildingObjectNumber)
+    {
+
+        if (newbuildingObjectNumber == 1)
+        {
+            currentTowerNumber = 1;
+        }
+        else
+        {
+            currentTowerNumber = 2;
+        }
+    } // END SetCurrentBuildingObject
+
+} // END Class
