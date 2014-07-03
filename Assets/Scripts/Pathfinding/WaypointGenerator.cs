@@ -28,6 +28,7 @@ public class WaypointGenerator : MonoBehaviour
     public float wallHeight = 5.0f;
     public float wallThickness = 2.0f;
 
+    public ArrayList path;
 
 
 
@@ -58,7 +59,7 @@ public class WaypointGenerator : MonoBehaviour
         CalculateNeighbours();
     }
 
-    public void RefreshWaypoints()
+    public ArrayList RefreshWaypoints()
     {
 
         foreach (Transform child in transform)
@@ -70,6 +71,9 @@ public class WaypointGenerator : MonoBehaviour
 
         CalculateWaypoints(transform);
         CalculateNeighbours();
+
+        path = PathFinder.GetPath(waypointSpawn.GetComponent<Waypoint>(), waypointGoal.GetComponent<Waypoint>());
+        return path;
     }
 
 

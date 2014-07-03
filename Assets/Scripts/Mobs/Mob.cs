@@ -28,6 +28,7 @@ public class Mob : MonoBehaviour
     public float regenerationArmor;
 
 
+
     // Use this for initialization
     void Start()
     {
